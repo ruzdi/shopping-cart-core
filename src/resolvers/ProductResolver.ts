@@ -9,7 +9,7 @@ export class ProductResolver {
   async createProduct(
     @Arg('name') name: string,
     @Arg('price') price: number,
-    @Arg('description', { nullable: true }) description: string,
+    @Arg('description', { nullable: true }) description: string
   ): Promise<ProductType> {
     const product = new ProductModel({ name, price, description });
     await product.save();
@@ -20,7 +20,9 @@ export class ProductResolver {
   @Query(() => [ProductType])
   async products(): Promise<ProductType[]> {
     const products = await ProductModel.find();
-    return products.map(product => product.toObject({ getters: true, virtuals: true }));
+    return products.map((product) =>
+      product.toObject({ getters: true, virtuals: true })
+    );
   }
 
   // READ (Single Product)
@@ -36,12 +38,12 @@ export class ProductResolver {
     @Arg('id', () => ID) id: string,
     @Arg('name', { nullable: true }) name: string,
     @Arg('price', { nullable: true }) price: number,
-    @Arg('description', { nullable: true }) description: string,
+    @Arg('description', { nullable: true }) description: string
   ): Promise<ProductType | null> {
     const product = await ProductModel.findByIdAndUpdate(
       id,
       { name, price, description },
-      { new: true },
+      { new: true }
     );
     return product ? product.toObject({ getters: true, virtuals: true }) : null;
   }
@@ -55,10 +57,14 @@ export class ProductResolver {
 
   // SEARCH
   @Query(() => [ProductType])
-  async searchProducts(@Arg('searchString') searchString: string): Promise<ProductType[]> {
+  async searchProducts(
+    @Arg('searchString') searchString: string
+  ): Promise<ProductType[]> {
     const products = await ProductModel.find({
-      $text: { $search: searchString }
+      $text: { $search: searchString },
     });
-    return products.map(product => product.toObject({ getters: true, virtuals: true }));
+    return products.map((product) =>
+      product.toObject({ getters: true, virtuals: true })
+    );
   }
 }

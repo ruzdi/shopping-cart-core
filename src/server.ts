@@ -1,4 +1,4 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import { buildSchema } from 'type-graphql';
@@ -27,7 +27,9 @@ async function startServer() {
 
   // Start the server
   app.listen({ port: 9000 }, () => {
-    console.log(`🚀 Server ready at http://localhost:9000${server.graphqlPath}`);
+    console.log(
+      `🚀 Server ready at http://localhost:9000${server.graphqlPath}`
+    );
   });
 }
 
