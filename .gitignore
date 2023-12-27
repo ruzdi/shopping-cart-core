@@ -18,6 +18,10 @@ dist/
 # production
 /build
 
+#.env files
+.env/*
+!.env/__RENAME__*
+
 # misc
 .DS_Store
 *.pem

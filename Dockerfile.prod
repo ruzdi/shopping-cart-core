@@ -1,0 +1,30 @@
+# Stage 1: Build
+FROM node:21 as builder
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+COPY yarn.lock ./
+
+RUN yarn install
+
+COPY . .
+
+# Add any build steps if your project requires them
+RUN yarn build
+
+# Stage 2: Production environment
+FROM node:21-slim
+
+WORKDIR /usr/src/app
+
+COPY --from=builder /usr/src/app/package*.json ./
+COPY --from=builder /usr/src/app/yarn.lock ./
+RUN yarn install --production
+
+# Copy built assets
+COPY --from=builder /usr/src/app/dist ./dist  
+
+EXPOSE 9091
+
+CMD ["node", "dist/server.js"] # Adjust the start command accordingly

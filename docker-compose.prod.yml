@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod # Make sure to use the production Dockerfile
+    ports:
+      - '${APP_PORT}:3000'
+    env_file:
+      - .env/production.env # Pointing to the production environment file
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+    # Removed volumes for production to prevent live code updates
+
+  mongodb:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_ROOT_PASSWORD}
+    ports:
+      - '${MONGO_DB_PORT}:27017'
+    volumes:
+      - mongodb-data:/data/db # Persistent volume for MongoDB data
+
+volumes:
+  mongodb-data:

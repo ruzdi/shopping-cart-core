@@ -3,10 +3,12 @@ import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import { buildSchema } from 'type-graphql';
 import { ProductResolver } from '@resolvers/ProductResolver'; // Import your resolvers
-// ... import other necessary modules and resolvers
+import { correlationIdMiddleware } from './utils/logger/log-middleware';
 
 async function startServer() {
   const app = express();
+
+  app.use(correlationIdMiddleware);
 
   // Build TypeGraphQL schema
   const schema = await buildSchema({
@@ -28,7 +30,7 @@ async function startServer() {
   // Start the server
   app.listen({ port: 9000 }, () => {
     console.log(
-      `🚀 Server ready at http://localhost:9000${server.graphqlPath}`
+      `🚀 Server ready at http://localhost:3000${server.graphqlPath}`
     );
   });
 }

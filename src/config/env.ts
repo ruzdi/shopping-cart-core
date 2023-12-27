@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 
 // Determine which .env file to load
-const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
+const envFile = `.env/.env.${process.env.NODE_ENV || 'development'}`;
 
 // Check if the file exists
 if (fs.existsSync(path.resolve(envFile))) {
@@ -17,12 +17,36 @@ if (fs.existsSync(path.resolve(envFile))) {
 
 interface Env {
   MONGO_URI: string;
-  // Add other environment variables as needed
+  MONGO_DB_HOST: string;
+  MONGO_DB_NAME: string;
+  MONGO_DB_USER: string;
+  MONGO_DB_PASSWORD: string;
+  MONGO_DB_PORT: string;
 }
 
+const {
+  MONGO_DB_ROOT_USERNAME: MONGO_DB_USER = '',
+  MONGO_DB_ROOT_PASSWORD: MONGO_DB_PASSWORD = '',
+  MONGO_DB_HOST = '',
+  MONGO_DB_PORT = '',
+  MONGO_DB_NAME = '',
+} = process.env;
+
+if (MONGO_DB_USER && MONGO_DB_PASSWORD) {
+}
+
+const MONGO_URI =
+  MONGO_DB_USER && MONGO_DB_PASSWORD
+    ? `mongodb://${MONGO_DB_USER}:${MONGO_DB_PASSWORD}@${MONGO_DB_HOST}:${MONGO_DB_PORT}/${MONGO_DB_NAME}`
+    : `mongodb://${MONGO_DB_HOST}:${MONGO_DB_PORT}/${MONGO_DB_NAME}`;
+
 const env: Env = {
-  MONGO_URI: process.env.MONGO_URI || 'mongodb://defaultUri/mydatabase',
-  // Default values or additional variables
+  MONGO_URI,
+  MONGO_DB_HOST,
+  MONGO_DB_PORT,
+  MONGO_DB_NAME,
+  MONGO_DB_USER: MONGO_DB_USER,
+  MONGO_DB_PASSWORD: encodeURIComponent(MONGO_DB_PASSWORD),
 };
 
 export default env;

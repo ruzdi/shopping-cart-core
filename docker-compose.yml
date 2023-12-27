@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  shopping_cart_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev # Use the development Dockerfile
+    container_name: shopping_cart_app_dev
+    ports:
+      - '${APP_PORT}:9000'
+    env_file:
+      - .env/development.env
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - shopping_cart_db
+    command: yarn dev
+    networks:
+      - shopping-cart-network
+
+  shopping_cart_db:
+    image: mongo
+    container_name: shopping_cart_mongo_db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+    ports:
+      - '${MONGO_DB_HOST_PORT}:27017'
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - shopping-cart-network
+
+volumes:
+  mongodb-data:
+
+networks:
+  shopping-cart-network:
+    driver: bridge
