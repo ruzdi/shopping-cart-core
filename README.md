@@ -1,6 +1,6 @@
 # Shopping Cart Core
 
-This project provides a containerized shopping cart application with a convenient Makefile for Docker container management and a docker_tasks.sh script for additional utility commands.
+This project provides a containerized shopping cart application with a convenient Makefile for Docker container management and a `docker_tasks.sh` script for additional utility commands.
 
 ## Features
 
@@ -8,9 +8,18 @@ This project provides a containerized shopping cart application with a convenien
 - **MongoDB Integration**: Utilizes MongoDB for robust data storage and retrieval.
 - **GraphQL API**: Provides a flexible and efficient GraphQL interface for data queries.
 
+## Environment Setup for Development
+
+Before running the application in development mode, you need to set up the necessary environment variables:
+
+1. **Rename Environment File**: Locate the file named `__RENAME__development.env` in the `.env` directory.
+2. **Update File Name**: Rename this file to `development.env`.
+3. **Configure Variables**: Fill in the required values for each environment variable in `development.env`.
+4. **Save Changes**: Save the file to apply these settings for development mode.
+
 ## Makefile Usage
 
-The Makefile simplifies the process of building and managing Docker containers for the application. Here's how you can use it:
+The Makefile simplifies the process of building and managing Docker containers for the application:
 
 - `make dev`: Starts the development environment.
 - `make prod`: Starts the production environment.
@@ -23,18 +32,20 @@ The Makefile simplifies the process of building and managing Docker containers f
 
 ## Docker Tasks Script Usage
 
-The `docker_tasks.sh` script provides utility commands for managing Docker containers and images. Here's how you can use it:
+The `docker_tasks.sh` script provides utility commands for Docker:
 
-- `./docker_tasks.sh dev`: Starts the development environment using Docker.
-- `./docker_tasks.sh prod`: Starts the production environment using Docker.
+- `./docker_tasks.sh dev`: Starts the development environment.
+- `./docker_tasks.sh prod`: Starts the production environment.
 - `./docker_tasks.sh stop-dev`: Stops the development environment.
 - `./docker_tasks.sh stop-prod`: Stops the production environment.
-- `./docker_tasks.sh clean-dev`: Cleans up the development environment, including removing all images and volumes.
-- `./docker_tasks.sh clean-prod`: Cleans up the production environment, including removing all images and volumes.
+- `./docker_tasks.sh clean-dev`: Cleans up the development environment.
+- `./docker_tasks.sh clean-prod`: Cleans up the production environment.
+- `./docker_tasks.sh full-clean-dev`: Fully cleans the development environment including removing all images and volumes.
+- `./docker_tasks.sh full-clean-prod`: Fully cleans the production environment including removing all images and volumes.
 
 ## Getting Started
 
-To get started with the project, clone the repository and navigate to the directory. Use the Makefile or docker_tasks.sh script to manage your Docker containers.
+Clone the repository and navigate to the directory. Use the Makefile or `docker_tasks.sh` script to manage Docker containers.
 
 ## Contributing
 
@@ -46,7 +57,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Questions or Feedback
 
-Feel free to [open an issue](https://github.com/ruzdi/shopping-cart-core/issues/new) on GitHub for any questions, suggestions, or feedback.
+For questions, suggestions, or feedback, [open an issue](https://github.com/ruzdi/shopping-cart-core/issues/new) on GitHub.
 
 ## Acknowledgements
 
