@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 
 // Determine which .env file to load
-const envFile = `.env/.env.${process.env.NODE_ENV || 'development'}`;
+const envFile = `.env/${process.env.NODE_ENV || 'development'}.env`;
 
 // Check if the file exists
 if (fs.existsSync(path.resolve(envFile))) {
