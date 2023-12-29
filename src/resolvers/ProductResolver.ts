@@ -1,17 +1,29 @@
 import { Resolver, Query, Mutation, Arg, ID } from 'type-graphql';
-import { ProductModel } from '@models/Product';
-import { ProductType } from '@schema/ProductType';
+import { IProduct, ProductModel } from '@models/Product';
+import {
+  CreateProductInput,
+  ProductType,
+  UpdateProductInput,
+} from '@schema/ProductType';
+
+function toProductType(productData: IProduct): ProductType {
+  const productType = new ProductType();
+  productType.id = productData.id;
+  productType.name = productData.name;
+  productType.price = productData.price;
+  productType.description = productData.description;
+
+  return productType;
+}
 
 @Resolver()
 export class ProductResolver {
   // CREATE
   @Mutation(() => ProductType)
   async createProduct(
-    @Arg('name') name: string,
-    @Arg('price') price: number,
-    @Arg('description', { nullable: true }) description: string
+    @Arg('data') data: CreateProductInput
   ): Promise<ProductType> {
-    const product = new ProductModel({ name, price, description });
+    const product = new ProductModel(data);
     await product.save();
     return product.toObject({ getters: true, virtuals: true }); // Convert to JavaScript object
   }
@@ -36,16 +48,16 @@ export class ProductResolver {
   @Mutation(() => ProductType)
   async updateProduct(
     @Arg('id', () => ID) id: string,
-    @Arg('name', { nullable: true }) name: string,
-    @Arg('price', { nullable: true }) price: number,
-    @Arg('description', { nullable: true }) description: string
+    @Arg('data') updateData: UpdateProductInput
   ): Promise<ProductType | null> {
-    const product = await ProductModel.findByIdAndUpdate(
-      id,
-      { name, price, description },
-      { new: true }
-    );
-    return product ? product.toObject({ getters: true, virtuals: true }) : null;
+    const product = await ProductModel.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
+
+    if (!product) {
+      throw new Error('Product not found');
+    }
+    return toProductType(product);
   }
 
   // DELETE
