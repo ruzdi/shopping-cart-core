@@ -4,6 +4,7 @@ import express from 'express';
 import { buildSchema } from 'type-graphql';
 import { ProductResolver } from '@resolvers/ProductResolver'; // Import your resolvers
 import { correlationIdMiddleware } from './utils/logger/log-middleware';
+import { UserResolver } from './resolvers/UserResolver';
 
 async function startServer() {
   const app = express();
@@ -12,7 +13,7 @@ async function startServer() {
 
   // Build TypeGraphQL schema
   const schema = await buildSchema({
-    resolvers: [ProductResolver], // Add all your resolvers here
+    resolvers: [ProductResolver, UserResolver], // Add all your resolvers here
     // ... other options
   });
 

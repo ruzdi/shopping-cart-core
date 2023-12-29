@@ -6,5 +6,7 @@
   "editor.formatOnSave": true,
   "prettier.singleQuote": true,
   "javascript.preferences.quoteStyle": "single",
-  "typescript.preferences.quoteStyle": "single"
+  "typescript.preferences.quoteStyle": "single",
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true
 }

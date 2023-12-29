@@ -11,6 +11,7 @@ services:
       - .env/development.env
     environment:
       - NODE_ENV=development
+      - JWT_SECRET=${JWT_SECRET}
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules

@@ -6,6 +6,7 @@ load_dev_env() {
         set -a  # automatically export all variables
         source .env/development.env
         set +a
+        echo "Development environment variables loaded successfully."
     else
         echo ".env/development.env file not found!"
         exit 1
@@ -18,6 +19,7 @@ load_prod_env() {
         set -a  # automatically export all variables
         source .env/production.env
         set +a
+        echo "Production environment variables loaded successfully."
     else
         echo ".env/production.env file not found!"
         exit 1
@@ -26,44 +28,44 @@ load_prod_env() {
 
 # Pull the latest changes from the Git repository
 pull() {
-    git pull
+    git pull && echo "Git repository updated successfully."
 }
 
 # Start the development environment
 dev() {
     load_dev_env
-    docker-compose -f docker-compose.yml up --build
+    docker-compose -f docker-compose.yml up --build && echo "Development environment started successfully."
 }
 
 # Start the production environment
 prod() {
     load_prod_env
-    docker-compose -f docker-compose.prod.yml up --build
+    docker-compose -f docker-compose.prod.yml up --build && echo "Production environment started successfully."
 }
 
 # Stop the development environment
 stop_dev() {
-    docker-compose -f docker-compose.yml down
+    docker-compose -f docker-compose.yml down && echo "Development environment stopped successfully."
 }
 
 # Stop the production environment
 stop_prod() {
-    docker-compose -f docker-compose.prod.yml down
+    docker-compose -f docker-compose.prod.yml down && echo "Production environment stopped successfully."
 }
 
 # Clean up the development environment
 clean_dev() {
-    docker-compose -f docker-compose.yml down --rmi local --volumes --remove-orphans
+    docker-compose -f docker-compose.yml down --rmi local --volumes --remove-orphans && echo "Development environment cleaned up successfully."
 }
 
 # Clean up the production environment
 clean_prod() {
-    docker-compose -f docker-compose.prod.yml down --rmi local --volumes --remove-orphans
+    docker-compose -f docker-compose.prod.yml down --rmi local --volumes --remove-orphans && echo "Production environment cleaned up successfully."
 }
 
 # Destroy all volumes (Warning: This will delete all data!)
 destroy_volumes() {
-    docker volume rm $(docker volume ls -q)
+    docker volume rm $(docker volume ls -q) && echo "All Docker volumes destroyed successfully."
 }
 
 # Enhanced clean up for development environment including Docker images
