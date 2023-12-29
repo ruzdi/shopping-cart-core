@@ -22,8 +22,9 @@ services:
       - shopping-cart-network
 
   shopping_cart_db:
-    image: mongo
+    image: mongo:latest
     container_name: shopping_cart_mongo_db
+    # command: ["--auth"]
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_ROOT_PASSWORD}
@@ -31,6 +32,7 @@ services:
     ports:
       - '${MONGO_DB_HOST_PORT}:27017'
     volumes:
+      - ./init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh
       - mongodb-data:/data/db
     networks:
       - shopping-cart-network

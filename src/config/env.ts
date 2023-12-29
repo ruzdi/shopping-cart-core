@@ -32,9 +32,6 @@ const {
   MONGO_DB_NAME = '',
 } = process.env;
 
-if (MONGO_DB_USER && MONGO_DB_PASSWORD) {
-}
-
 const MONGO_URI =
   MONGO_DB_USER && MONGO_DB_PASSWORD
     ? `mongodb://${MONGO_DB_USER}:${MONGO_DB_PASSWORD}@${MONGO_DB_HOST}:${MONGO_DB_PORT}/${MONGO_DB_NAME}`
