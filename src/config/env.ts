@@ -1,17 +1,20 @@
 // File: src/config/env.ts
 
+import { log } from '@/utils/logger/log';
 import * as dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
 
 // Determine which .env file to load
-const envFile = `.env/${process.env.NODE_ENV || 'development'}.env`;
+let envFile = `.env/${process.env.NODE_ENV || 'development'}.env`;
+
+envFile = process.env.NODE_ENV === 'test' ? '.env/test.env' : envFile;
 
 // Check if the file exists
 if (fs.existsSync(path.resolve(envFile))) {
   dotenv.config({ path: envFile });
 } else {
-  console.warn(`.env file ${envFile} not found, loading defaults`);
+  log.error(`.env file ${envFile} not found, loading defaults`);
   dotenv.config();
 }
 

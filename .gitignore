@@ -39,6 +39,6 @@ init-mongo.sh
 # vercel
 .vercel
 
-
 # temporary ignore
-Todo.temp.md
+*.temp.*
+*/*.temp.*
