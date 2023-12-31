@@ -5,6 +5,7 @@ import { compilerOptions } from './tsconfig.json';
 const config: Config.InitialOptions = {
   preset: 'ts-jest',
   testEnvironment: 'node',
+  moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',
   }),
@@ -17,6 +18,8 @@ const config: Config.InitialOptions = {
     '!src/**/*.d.ts', // Exclude TypeScript declaration files
     // ...exclude any other files not relevant for coverage
   ],
+  // Make sure Jest looks at your TypeScript files:
+  testMatch: ['**/__tests__/**/*.ts?(x)', '**/?(*.)+(spec|test).ts?(x)'],
 };
 
 export default config;

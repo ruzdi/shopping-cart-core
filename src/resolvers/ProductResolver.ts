@@ -25,7 +25,7 @@ export class ProductResolver {
   ): Promise<ProductType> {
     const product = new ProductModel(data);
     await product.save();
-    return product.toObject({ getters: true, virtuals: true }); // Convert to JavaScript object
+    return product?.toObject?.({ getters: true, virtuals: true }); // Convert to JavaScript object
   }
 
   // READ (All Products)
