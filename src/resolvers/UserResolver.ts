@@ -1,29 +1,23 @@
 import { Resolver, Query, Mutation, Arg, ID } from 'type-graphql';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
 
-import User, { IUser } from '@models/User';
+import { UserModel, IUser } from '@models/User';
 import {
   RegisterInput,
   LoginInput,
   UserType,
   UpdateUserInput,
 } from '@schema/UserType';
-import { log } from '@/utils/logger/log';
+import { log } from '@utils/logger/log';
+import {
+  comparePassword,
+  generateToken,
+  getHashedPassword,
+} from '@utils/security';
+
 import { Token } from 'graphql';
 import { TokenType } from '@/types/Types';
 
-function generateToken(user: IUser): string {
-  if (!process.env.JWT_SECRET) {
-    throw new Error('JWT secret is not defined');
-  }
-
-  return jwt.sign(toUserType(user), process.env.JWT_SECRET, {
-    expiresIn: '1h',
-  });
-}
-
-function toUserType(user: IUser): UserType {
+export function toUserType(user: IUser): UserType {
   return {
     id: user.id,
     email: user.email,
@@ -45,24 +39,22 @@ export class UserResolver {
 
   @Query(() => [UserType])
   async users(): Promise<UserType[]> {
-    return await User.find();
+    return (await UserModel.find()).map(toUserType);
   }
 
   @Query(() => UserType, { nullable: true })
   async user(@Arg('id', () => ID) id: string): Promise<UserType | null> {
-    return await User.findById(id);
+    const result = await UserModel.findById(id);
+    return result ? toUserType(result as IUser) : null;
   }
 
   @Mutation(() => UserType)
   async createUser(@Arg('data') userData: RegisterInput): Promise<UserType> {
     log.debug('Creating user' + JSON.stringify(userData));
 
-    const newUser = new User(userData);
+    const newUser = new UserModel(userData);
     await newUser.save();
-    const token = generateToken(newUser);
-    const userType = toUserType(newUser);
-    userType.token = token;
-    return userType;
+    return toUserType(newUser);
   }
 
   @Mutation(() => UserType, { nullable: true })
@@ -70,10 +62,13 @@ export class UserResolver {
     @Arg('id', () => ID) id: string,
     @Arg('data') updateData: UpdateUserInput
   ): Promise<UserType | null> {
+    // TODO: Add authorization and change password will be a different graphql request
     if (updateData.password) {
-      updateData.password = await bcrypt.hash(updateData.password, 10);
+      updateData.password = await getHashedPassword(updateData.password);
     }
-    const user = await User.findByIdAndUpdate(id, updateData, { new: true });
+    const user = await UserModel.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
 
     if (!user) {
       throw new Error('User not found');
@@ -83,13 +78,13 @@ export class UserResolver {
 
   @Mutation(() => Boolean)
   async deleteUser(@Arg('id', () => ID) id: string): Promise<boolean> {
-    const user = await User.findByIdAndDelete(id);
+    const user = await UserModel.findByIdAndDelete(id);
     return !!user;
   }
 
   @Mutation(() => UserType)
   async register(@Arg('data') registerData: RegisterInput): Promise<UserType> {
-    const newUser = new User(registerData);
+    const newUser = new UserModel(registerData);
     await newUser.save();
     const token = generateToken(newUser);
     const userType = toUserType(newUser);
@@ -99,17 +94,15 @@ export class UserResolver {
 
   @Mutation(() => UserType)
   async login(@Arg('data') loginData: LoginInput): Promise<TokenType> {
-    const user = await User.findOne({ email: loginData.email }).select(
+    const user = await UserModel.findOne({ email: loginData.email }).select(
       '+password'
     );
-
-    console.log('login >>> ', user);
 
     if (!user) {
       throw new Error('User not found');
     }
 
-    const valid = await bcrypt.compare(loginData.password, user.password);
+    const valid = await comparePassword(loginData.password, user.password);
     if (!valid) {
       throw new Error('Invalid credentials');
     }
